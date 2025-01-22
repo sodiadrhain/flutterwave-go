@@ -23,6 +23,8 @@ import "github.com/sodiadrhain/flutterwave-go"
 
 # Usage
 ```go
+package main
+
 import (
 	"fmt"
 	"net/http"
@@ -30,33 +32,37 @@ import (
 	"github.com/sodiadrhain/flutterwave-go"
 )
 
-secretKey := "FLWSECK_TEST-SANDBOXDEMOKEY-X"
+func main() {
+	secretKey := "FLWSECK_TEST-SANDBOXDEMOKEY-X"
 
-client := flutterwave.New(apiKey, http.DefaultClient)
+	client := flutterwave.New(secretKey, http.DefaultClient)
 
-// Create a transfer
-req := &TransferRequest{
-	AccountBank:   "044",
-	AccountNumber: "0690000040",
-	Amount:        5000.00,
-	Narration:     "Test transfers",
-	Currency:      "NGN",
-	Reference:     "test-ref-rfxx007",
-	DebitCurrency: "NGN",
-	Meta:          TransferMeta{Email: "test@tesuser.com", FirstName: "test" LastName: "user"},
+	// Create a transfer
+	req := &flutterwave.TransferRequest{
+		AccountBank:   "044",
+		AccountNumber: "0690000040",
+		Amount:        5000.00,
+		Narration:     "Test transfers",
+		Currency:      "NGN",
+		Reference:     "test-ref-fesaill07",
+		DebitCurrency: "NGN",
+		Meta:          flutterwave.TransferMeta{Email: "test@tesuser.com", FirstName: "test", LastName: "user"},
+	}
+
+	transfer, err := client.Transfer.CreateTransfer(req)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Get a transfer
+	transfer, err = client.Transfer.GetTransfer(transfer.Data.ID)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(transfer)
 }
-
-transfer, err := client.Transfer.CreateTransfer(req)
-
-if err != nil {
-    // handle error
-	fmt.Println(err)
-}
-
-// Get a transfer
-transfer, err := client.Transfer.GetTransfer(transfer.ID)
-
-fmt.Println(transfer)
 ```
 See the test files for details and more example usage.
 
