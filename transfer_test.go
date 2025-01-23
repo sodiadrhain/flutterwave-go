@@ -21,7 +21,7 @@ func TestCreateTransfer(t *testing.T) {
 	req := &TransferRequest{
 		AccountBank:   accountBank,
 		AccountNumber: accountNumber,
-		Amount:        float32(ammount),
+		Amount:        float64(ammount),
 		Narration:     narration,
 		Currency:      currency,
 		Reference:     reference,
@@ -71,7 +71,7 @@ func TestCreateBulkTransfer(t *testing.T) {
 		BulkData: append(bulkData, TransferRequest{
 			AccountBank:   accountBank,
 			AccountNumber: accountNumber,
-			Amount:        float32(ammount),
+			Amount:        float64(ammount),
 			Narration:     narration,
 			Currency:      currency,
 			Reference:     reference,
@@ -80,7 +80,7 @@ func TestCreateBulkTransfer(t *testing.T) {
 		}, TransferRequest{
 			AccountBank:   accountBank,
 			AccountNumber: accountNumber,
-			Amount:        float32(ammount),
+			Amount:        float64(ammount),
 			Narration:     narration,
 			Currency:      currency,
 			Reference:     reference,
@@ -116,7 +116,6 @@ func TestQueryTransferFee(t *testing.T) {
 	if fee.Status != "success" {
 		t.Errorf("Query transfer fee error: Expected transfer status to be success, got %v; With message: \"%v\"", fee.Status, fee.Message)
 	}
-
 }
 
 func TestGetTransfers(t *testing.T) {

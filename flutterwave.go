@@ -19,38 +19,51 @@ type service struct {
 
 // Client object config
 type Client struct {
-	service    service
+	service     service
+	httpClient  *http.Client
+	baseURL     string
+	secretKey   string
+	Transfer    *TransferService
+	Transaction *TransactionService
+}
+
+type ClientConfig struct {
 	httpClient *http.Client
-	baseURL    string
 	secretKey  string
-	Transfer   *TransferService
 }
 
 // New initializes a new client config for communication with Flutterwave API
 // using given secret key
-func New(secretKey string, httpClient *http.Client) *Client {
-	if httpClient == nil {
-		httpClient = &http.Client{Timeout: 60 * time.Second}
+func New(config *ClientConfig) *Client {
+
+	if config.httpClient == nil {
+		config.httpClient = &http.Client{Timeout: 60 * time.Second}
 	}
 
-	baseUrl := fmt.Sprintf("%s/v3", baseURL)
 	client := &Client{
-		httpClient: httpClient,
-		secretKey:  secretKey,
-		baseURL:    baseUrl,
-		Transfer:   &TransferService{},
+		httpClient: config.httpClient,
+		secretKey:  config.secretKey,
+		baseURL:    fmt.Sprintf("%s/v3", baseURL),
 	}
 
 	client.service.client = client
 	client.Transfer = (*TransferService)(&client.service)
+	client.Transaction = (*TransactionService)(&client.service)
 	return client
 }
 
+// Response from the Flutterwave API
 type ApiResponse struct {
-	Status  string      `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-	Meta    MetaData    `json:"meta,omitempty"`
+	Status  string                 `json:"status"`
+	Message string                 `json:"message"`
+	Data    map[string]interface{} `json:"data"`
+}
+
+type ApiResponseList struct {
+	Status  string                   `json:"status"`
+	Message string                   `json:"message"`
+	Data    []map[string]interface{} `json:"data"`
+	Meta    MetaData                 `json:"meta,omitempty"`
 }
 
 // Pagination meta data for paginated responses from the Flutterwave API
@@ -75,8 +88,8 @@ func getGetTestKey() string {
 	return key
 }
 
-// Make HTTP request to the Flutterwave API
-func (c *Client) makeRequest(method, urlPath string, reqBody, v interface{}) error {
+// NewRequest makes HTTP request to the Flutterwave API
+func (c *Client) NewRequest(method, urlPath string, reqBody, v interface{}) error {
 	newURL := c.baseURL + urlPath
 	var body io.Reader
 

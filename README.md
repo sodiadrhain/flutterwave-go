@@ -1,5 +1,7 @@
 # flutterwave-go
-Flutterwave go library is built for accessing the Flutterwave API
+Flutterwave go library is built for accessing the Flutterwave API.
+
+It is currenctly designed for the V3 API's.
 
 DOCUMENTATION: https://developer.flutterwave.com/docs/getting-started
 
@@ -33,9 +35,11 @@ import (
 )
 
 func main() {
-	secretKey := "FLWSECK_TEST-SANDBOXDEMOKEY-X"
+	key := "FLWSECK_TEST-SANDBOXDEMOKEY-X"
 
-	client := flutterwave.New(secretKey, http.DefaultClient)
+	client := flutterwave.New(&flutterwave.ClientConfig{
+		secretKey: key,
+	})
 
 	// Create a transfer
 	req := &flutterwave.TransferRequest{
