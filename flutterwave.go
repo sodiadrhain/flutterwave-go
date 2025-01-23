@@ -27,22 +27,17 @@ type Client struct {
 	Transaction *TransactionService
 }
 
-type ClientConfig struct {
-	httpClient *http.Client
-	secretKey  string
-}
-
 // New initializes a new client config for communication with Flutterwave API
 // using given secret key
-func New(config *ClientConfig) *Client {
+func New(secretKey string, httpClient *http.Client) *Client {
 
-	if config.httpClient == nil {
-		config.httpClient = &http.Client{Timeout: 60 * time.Second}
+	if httpClient == nil {
+		httpClient = &http.Client{Timeout: 60 * time.Second}
 	}
 
 	client := &Client{
-		httpClient: config.httpClient,
-		secretKey:  config.secretKey,
+		httpClient: httpClient,
+		secretKey:  secretKey,
 		baseURL:    fmt.Sprintf("%s/v3", baseURL),
 	}
 

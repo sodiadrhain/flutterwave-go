@@ -4,7 +4,5 @@ var testClient *Client
 
 func init() {
 	secretKey := getGetTestKey()
-	testClient = New(&ClientConfig{
-		secretKey: secretKey,
-	})
+	testClient = New(secretKey, nil)
 }
