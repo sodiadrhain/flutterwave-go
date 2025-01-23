@@ -57,10 +57,8 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(transfer)
-
 	// Get a transfer
-	transfer, err = client.Transfer.GetTransfer("494949")
+	transfer, err = client.Transfer.GetTransfer(transfer.Data.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
