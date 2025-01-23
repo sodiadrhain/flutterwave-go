@@ -35,11 +35,9 @@ import (
 )
 
 func main() {
-	key := "FLWSECK_TEST-SANDBOXDEMOKEY-X"
+	secretKey := "FLWSECK_TEST-SANDBOXDEMOKEY-X"
 
-	client := flutterwave.New(&flutterwave.ClientConfig{
-		secretKey: key,
-	})
+	client := flutterwave.New(secretKey, http.DefaultClient)
 
 	// Create a transfer
 	req := &flutterwave.TransferRequest{
