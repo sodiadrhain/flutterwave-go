@@ -3,7 +3,7 @@ Flutterwave go library is built for accessing the Flutterwave API.
 
 It is currenctly designed for the V3 API's.
 
-DOCUMENTATION: https://developer.flutterwave.com/docs/getting-started
+DOCUMENTATION: https://developer.flutterwave.com/docs
 
 
 # Getting Started
@@ -57,8 +57,10 @@ func main() {
 		fmt.Println(err)
 	}
 
+	fmt.Println(transfer)
+
 	// Get a transfer
-	transfer, err = client.Transfer.GetTransfer(transfer.Data.ID)
+	transfer, err = client.Transfer.GetTransfer("494949")
 	if err != nil {
 		fmt.Println(err)
 	}

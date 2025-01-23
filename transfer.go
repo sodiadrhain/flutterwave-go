@@ -8,7 +8,7 @@ import (
 type TransferService service
 
 type Transfer struct {
-	ID               int32        `json:"id,omitempty"`
+	ID               int          `json:"id,omitempty"`
 	AccountNumber    string       `json:"account_number,omitempty"`
 	BankCode         string       `json:"bank_code,omitempty"`
 	FullName         string       `json:"full_name,omitempty"`
@@ -95,9 +95,9 @@ type TransferListResponse struct {
 // https://developer.flutterwave.com/reference/create-a-transfer
 //
 // req receives the request body a type of TransferRequest
-func (ts *TransferService) CreateTransfer(req *TransferRequest) (TransferResponse, error) {
+func (s *TransferService) CreateTransfer(req *TransferRequest) (TransferResponse, error) {
 	var res TransferResponse
-	err := ts.client.NewRequest(http.MethodPost, "/transfers", req, &res)
+	err := s.client.NewRequest(http.MethodPost, "/transfers", req, &res)
 	return res, err
 }
 
@@ -105,18 +105,18 @@ func (ts *TransferService) CreateTransfer(req *TransferRequest) (TransferRespons
 // https://developer.flutterwave.com/reference/transfer-retry
 //
 // id is the transfer id to retry
-func (ts *TransferService) RetryFailedTransfer(id int) (TransferResponse, error) {
+func (s *TransferService) RetryFailedTransfer(id int) (TransferResponse, error) {
 	var res TransferResponse
 	url := fmt.Sprintf("/transfers/%d/retries", id)
-	err := ts.client.NewRequest(http.MethodPost, url, nil, &res)
+	err := s.client.NewRequest(http.MethodPost, url, nil, &res)
 	return res, err
 }
 
 // Create bulk transfer:
 // https://developer.flutterwave.com/reference/create-bulk-transfer
-func (ts *TransferService) CreateBulkTransfer(req *BulkTransferRequest) (TransferResponse, error) {
+func (s *TransferService) CreateBulkTransfer(req *BulkTransferRequest) (TransferResponse, error) {
 	var res TransferResponse
-	err := ts.client.NewRequest(http.MethodPost, "/bulk-transfers", req, &res)
+	err := s.client.NewRequest(http.MethodPost, "/bulk-transfers", req, &res)
 	return res, err
 }
 
@@ -125,10 +125,10 @@ func (ts *TransferService) CreateBulkTransfer(req *BulkTransferRequest) (Transfe
 //
 // entity == type, this is the type of transfer you want to get the fee for.
 // expected values are mobilemoney and account.
-func (ts *TransferService) QueryTransferFee(amount int, curreny string, entity string) (ApiResponseList, error) {
+func (s *TransferService) QueryTransferFee(amount int, curreny string, entity string) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transfers/fee?amount=%d&currency=%s&type=%s", amount, curreny, entity)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -139,13 +139,13 @@ func (ts *TransferService) QueryTransferFee(amount int, curreny string, entity s
 //	"to pass params for" reference: GetTransfers("reference=test-ref")
 //	"to pass params for" reference & page: GetTransfers("reference=test-ref&page=1")
 //	"to pass params for" reference & page & status: GetTransfers("reference=test-ref&page=1&status=successful")
-func (ts *TransferService) GetTransfers(params string) (TransferListResponse, error) {
+func (s *TransferService) GetTransfers(params string) (TransferListResponse, error) {
 	var res TransferListResponse
 	url := "/transfers"
 	if params != "" {
-		url = fmt.Sprintf("/transfers?%s", params)
+		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -153,10 +153,10 @@ func (ts *TransferService) GetTransfers(params string) (TransferListResponse, er
 // https://developer.flutterwave.com/reference/get-a-transfer
 //
 // id is the transfer id to fetch
-func (ts *TransferService) GetTransfer(id int) (TransferResponse, error) {
+func (s *TransferService) GetTransfer(id int) (TransferResponse, error) {
 	var res TransferResponse
 	url := fmt.Sprintf("/transfers/%d", id)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -164,10 +164,10 @@ func (ts *TransferService) GetTransfer(id int) (TransferResponse, error) {
 // https://developer.flutterwave.com/reference/get-a-transfer-retry
 //
 // id is the transfer id to fetch retries for
-func (ts *TransferService) GetTransferRetry(id int) (ApiResponseList, error) {
+func (s *TransferService) GetTransferRetry(id int) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transfers/%d/retries", id)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -175,9 +175,9 @@ func (ts *TransferService) GetTransferRetry(id int) (ApiResponseList, error) {
 // https://developer.flutterwave.com/reference/get-a-bulk-transfer
 //
 // id is the bulk transfer id to fetch
-func (ts *TransferService) GetBulkTransfer(id int) (ApiResponseList, error) {
+func (s *TransferService) GetBulkTransfer(id int) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transfers?batch_id=%d", id)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }

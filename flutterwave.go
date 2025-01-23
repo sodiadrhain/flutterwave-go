@@ -25,6 +25,7 @@ type Client struct {
 	secretKey   string
 	Transfer    *TransferService
 	Transaction *TransactionService
+	Bank        *BankService
 }
 
 // New initializes a new client config for communication with Flutterwave API
@@ -44,6 +45,7 @@ func New(secretKey string, httpClient *http.Client) *Client {
 	client.service.client = client
 	client.Transfer = (*TransferService)(&client.service)
 	client.Transaction = (*TransactionService)(&client.service)
+	client.Bank = (*BankService)(&client.service)
 	return client
 }
 

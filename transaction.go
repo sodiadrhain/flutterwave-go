@@ -8,7 +8,7 @@ import (
 type TransactionService service
 
 type Transaction struct {
-	ID                int32                  `json:"id,omitempty"`
+	ID                int                    `json:"id,omitempty"`
 	TxRef             string                 `json:"tx_ref,omitempty"`
 	FlwRef            string                 `json:"flw_ref,omitempty"`
 	DeviceFingerprint string                 `json:"device_fingerprint,omitempty"`
@@ -48,10 +48,10 @@ type TransactionListResponse struct {
 // https://developer.flutterwave.com/reference/verify-transaction
 //
 // id is the transaction id to verify
-func (ts *TransactionService) VerifyTransactionById(id int) (TransactionResponse, error) {
+func (s *TransactionService) VerifyTransactionById(id int) (TransactionResponse, error) {
 	var res TransactionResponse
 	url := fmt.Sprintf("/transactions/%d/verify", id)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -59,10 +59,10 @@ func (ts *TransactionService) VerifyTransactionById(id int) (TransactionResponse
 // https://developer.flutterwave.com/reference/verify-transaction-with-tx_ref
 //
 // txRef is the transaction reference to verify
-func (ts *TransactionService) VerifyTransactionByRef(txRef string) (TransactionResponse, error) {
+func (s *TransactionService) VerifyTransactionByRef(txRef string) (TransactionResponse, error) {
 	var res TransactionResponse
 	url := fmt.Sprintf("/transactions/verify_by_reference?tx_ref=%s", txRef)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -73,13 +73,13 @@ func (ts *TransactionService) VerifyTransactionByRef(txRef string) (TransactionR
 //	"to pass params for" tx_ref: GetTransactions("tx_ref=test-ref")
 //	"to pass params for" tx_ref & page: GetTransactions("tx_ref=test-ref&page=1")
 //	"to pass params for" tx_ref & page & status: GetTransactions("tx_ref=test-ref&page=1&status=successful")
-func (ts *TransactionService) GetTransactions(params string) (TransactionListResponse, error) {
+func (s *TransactionService) GetTransactions(params string) (TransactionListResponse, error) {
 	var res TransactionListResponse
 	url := "/transactions"
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -87,10 +87,10 @@ func (ts *TransactionService) GetTransactions(params string) (TransactionListRes
 // https://developer.flutterwave.com/reference/get-transaction-events
 //
 // id is the transaction id to view events for
-func (ts *TransactionService) ViewTransactionTimeline(id int) (ApiResponseList, error) {
+func (s *TransactionService) ViewTransactionTimeline(id int) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transactions/%d/events", id)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -102,10 +102,10 @@ func (ts *TransactionService) ViewTransactionTimeline(id int) (ApiResponseList, 
 // body is request body to pass, example usage:
 //
 //	body := map[string]interface{}{"amount": 5000, "comments": "test comment"}
-func (ts *TransactionService) RefundTransaction(id int, body map[string]interface{}) (ApiResponse, error) {
+func (s *TransactionService) RefundTransaction(id int, body map[string]interface{}) (ApiResponse, error) {
 	var res ApiResponse
 	url := fmt.Sprintf("/transactions/%d/refund", id)
-	err := ts.client.NewRequest(http.MethodPost, url, body, &res)
+	err := s.client.NewRequest(http.MethodPost, url, body, &res)
 	return res, err
 }
 
@@ -113,10 +113,10 @@ func (ts *TransactionService) RefundTransaction(id int, body map[string]interfac
 // https://developer.flutterwave.com/reference/get-transaction-refunds
 //
 // id is the refund id to fetch
-func (ts *TransactionService) FetchRefundedTransaction(id int) (ApiResponse, error) {
+func (s *TransactionService) FetchRefundedTransaction(id int) (ApiResponse, error) {
 	var res ApiResponse
 	url := fmt.Sprintf("/transactions/refunds/%d", id)
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -127,13 +127,13 @@ func (ts *TransactionService) FetchRefundedTransaction(id int) (ApiResponse, err
 //	"to pass params for" flw_ref: FetchMultipleRefundedTransactions("flw_ref=test-ref")
 //	"to pass params for" flw_ref & page: FetchMultipleRefundedTransactions("flw_ref=test-ref&page=1")
 //	"to pass params for" flw_ref & page & status: FetchMultipleRefundedTransactions("flw_ref=test-ref&page=1&status=successful")
-func (ts *TransactionService) FetchMultipleRefundedTransactions(params string) (ApiResponseList, error) {
+func (s *TransactionService) FetchMultipleRefundedTransactions(params string) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := "/refunds"
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -143,13 +143,13 @@ func (ts *TransactionService) FetchMultipleRefundedTransactions(params string) (
 //	'params' == 'Query Params'
 //	"to pass params for" amount: QueryTransactionFees("amount=5000")
 //	"to pass params for" amount & currency: QueryTransactionFees("amount=5000&currency=NGN")
-func (ts *TransactionService) QueryTransactionFees(params string) (ApiResponse, error) {
+func (s *TransactionService) QueryTransactionFees(params string) (ApiResponse, error) {
 	var res ApiResponse
 	url := "/fee"
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := ts.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -161,12 +161,12 @@ func (ts *TransactionService) QueryTransactionFees(params string) (ApiResponse, 
 //	'params' == 'Query Params'
 //	"to pass params for" amount: ResendFailedWeebhook("amount=5000")
 //	"to pass params for" amount & currency: ResendFailedWeebhook("amount=5000&currency=NGN")
-func (ts *TransactionService) ResendFailedWeebhook(id int, params string) (ApiResponse, error) {
+func (s *TransactionService) ResendFailedWeebhook(id int, params string) (ApiResponse, error) {
 	var res ApiResponse
 	url := fmt.Sprintf("/transactions/%d/resend-hook", id)
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := ts.client.NewRequest(http.MethodPost, url, nil, &res)
+	err := s.client.NewRequest(http.MethodPost, url, nil, &res)
 	return res, err
 }
