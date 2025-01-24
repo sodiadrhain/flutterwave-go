@@ -1,7 +1,7 @@
 # flutterwave-go
 Flutterwave go library is built for accessing the Flutterwave API.
 
-It is currenctly designed for the V3 API's.
+It is currenctly designed for the V3 APIs.
 
 DOCUMENTATION: https://developer.flutterwave.com/docs
 

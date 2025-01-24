@@ -42,7 +42,7 @@ type BankBranchResponse struct {
 func (s *BankService) GetBanks(country string) (BankResponse, error) {
 	var res BankResponse
 	url := fmt.Sprintf("/banks/%s", country)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -53,6 +53,6 @@ func (s *BankService) GetBanks(country string) (BankResponse, error) {
 func (s *BankService) GetBankBranches(id int) (BankBranchResponse, error) {
 	var res BankBranchResponse
 	url := fmt.Sprintf("/banks/%d/branches", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }

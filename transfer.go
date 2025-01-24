@@ -97,7 +97,7 @@ type TransferListResponse struct {
 // req receives the request body a type of TransferRequest
 func (s *TransferService) CreateTransfer(req *TransferRequest) (TransferResponse, error) {
 	var res TransferResponse
-	err := s.client.NewRequest(http.MethodPost, "/transfers", req, &res)
+	err := s.client.makeRequest(http.MethodPost, "/transfers", req, &res)
 	return res, err
 }
 
@@ -108,7 +108,7 @@ func (s *TransferService) CreateTransfer(req *TransferRequest) (TransferResponse
 func (s *TransferService) RetryFailedTransfer(id int) (TransferResponse, error) {
 	var res TransferResponse
 	url := fmt.Sprintf("/transfers/%d/retries", id)
-	err := s.client.NewRequest(http.MethodPost, url, nil, &res)
+	err := s.client.makeRequest(http.MethodPost, url, nil, &res)
 	return res, err
 }
 
@@ -116,7 +116,7 @@ func (s *TransferService) RetryFailedTransfer(id int) (TransferResponse, error) 
 // https://developer.flutterwave.com/reference/create-bulk-transfer
 func (s *TransferService) CreateBulkTransfer(req *BulkTransferRequest) (TransferResponse, error) {
 	var res TransferResponse
-	err := s.client.NewRequest(http.MethodPost, "/bulk-transfers", req, &res)
+	err := s.client.makeRequest(http.MethodPost, "/bulk-transfers", req, &res)
 	return res, err
 }
 
@@ -128,7 +128,7 @@ func (s *TransferService) CreateBulkTransfer(req *BulkTransferRequest) (Transfer
 func (s *TransferService) QueryTransferFee(amount int, curreny string, entity string) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transfers/fee?amount=%d&currency=%s&type=%s", amount, curreny, entity)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -145,7 +145,7 @@ func (s *TransferService) GetTransfers(params string) (TransferListResponse, err
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -156,7 +156,7 @@ func (s *TransferService) GetTransfers(params string) (TransferListResponse, err
 func (s *TransferService) GetTransfer(id int) (TransferResponse, error) {
 	var res TransferResponse
 	url := fmt.Sprintf("/transfers/%d", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -167,7 +167,7 @@ func (s *TransferService) GetTransfer(id int) (TransferResponse, error) {
 func (s *TransferService) GetTransferRetry(id int) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transfers/%d/retries", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -178,6 +178,6 @@ func (s *TransferService) GetTransferRetry(id int) (ApiResponseList, error) {
 func (s *TransferService) GetBulkTransfer(id int) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transfers?batch_id=%d", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }

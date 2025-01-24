@@ -51,7 +51,7 @@ type TransactionListResponse struct {
 func (s *TransactionService) VerifyTransactionById(id int) (TransactionResponse, error) {
 	var res TransactionResponse
 	url := fmt.Sprintf("/transactions/%d/verify", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -62,7 +62,7 @@ func (s *TransactionService) VerifyTransactionById(id int) (TransactionResponse,
 func (s *TransactionService) VerifyTransactionByRef(txRef string) (TransactionResponse, error) {
 	var res TransactionResponse
 	url := fmt.Sprintf("/transactions/verify_by_reference?tx_ref=%s", txRef)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -79,7 +79,7 @@ func (s *TransactionService) GetTransactions(params string) (TransactionListResp
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -90,7 +90,7 @@ func (s *TransactionService) GetTransactions(params string) (TransactionListResp
 func (s *TransactionService) ViewTransactionTimeline(id int) (ApiResponseList, error) {
 	var res ApiResponseList
 	url := fmt.Sprintf("/transactions/%d/events", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -105,7 +105,7 @@ func (s *TransactionService) ViewTransactionTimeline(id int) (ApiResponseList, e
 func (s *TransactionService) RefundTransaction(id int, body map[string]interface{}) (ApiResponse, error) {
 	var res ApiResponse
 	url := fmt.Sprintf("/transactions/%d/refund", id)
-	err := s.client.NewRequest(http.MethodPost, url, body, &res)
+	err := s.client.makeRequest(http.MethodPost, url, body, &res)
 	return res, err
 }
 
@@ -116,7 +116,7 @@ func (s *TransactionService) RefundTransaction(id int, body map[string]interface
 func (s *TransactionService) FetchRefundedTransaction(id int) (ApiResponse, error) {
 	var res ApiResponse
 	url := fmt.Sprintf("/transactions/refunds/%d", id)
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -133,7 +133,7 @@ func (s *TransactionService) FetchMultipleRefundedTransactions(params string) (A
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -149,7 +149,7 @@ func (s *TransactionService) QueryTransactionFees(params string) (ApiResponse, e
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := s.client.NewRequest(http.MethodGet, url, nil, &res)
+	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
 }
 
@@ -167,6 +167,6 @@ func (s *TransactionService) ResendFailedWeebhook(id int, params string) (ApiRes
 	if params != "" {
 		url = fmt.Sprintf("%s?%s", url, params)
 	}
-	err := s.client.NewRequest(http.MethodPost, url, nil, &res)
+	err := s.client.makeRequest(http.MethodPost, url, nil, &res)
 	return res, err
 }

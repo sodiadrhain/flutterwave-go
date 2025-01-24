@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -56,6 +55,7 @@ type ApiResponse struct {
 	Data    map[string]interface{} `json:"data"`
 }
 
+// Response with list data from the Flutterwave API
 type ApiResponseList struct {
 	Status  string                   `json:"status"`
 	Message string                   `json:"message"`
@@ -68,6 +68,7 @@ type PaginationMeta struct {
 	Total      int `json:"total"`
 	CurrenPage int `json:"current_page"`
 	TotalPages int `json:"total_pages"`
+	PageSize   int `json:"page_size,omitempty"`
 }
 
 // Meta data from the Flutterwave API
@@ -75,32 +76,28 @@ type MetaData struct {
 	PageInfo PaginationMeta `json:"page_info,omitempty"`
 }
 
-func getGetTestKey() string {
-	key := os.Getenv("FLW_SECK_KEY")
-
-	if len(key) == 0 {
-		key = "FLWSECK_TEST-SANDBOXDEMOKEY-X"
-	}
-
-	return key
+// ErrorResponse from the Flutterwave API
+type ErrorResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
 }
 
-// NewRequest makes HTTP request to the Flutterwave API
-func (c *Client) NewRequest(method, urlPath string, reqBody, v interface{}) error {
+// makeRequest makes HTTP request to the Flutterwave API
+func (c *Client) makeRequest(method, urlPath string, reqBody, v interface{}) error {
 	newURL := c.baseURL + urlPath
 	var body io.Reader
 
 	if reqBody != nil {
 		bb, err := json.Marshal(reqBody)
 		if err != nil {
-			return err
+			return hanldeError(UnknownError, err, nil)
 		}
 		body = bytes.NewReader(bb)
 	}
 
 	req, err := http.NewRequest(method, newURL, body)
 	if err != nil {
-		return err
+		return hanldeError(RequestError, err, nil)
 	}
 
 	if method == http.MethodPost {
@@ -111,13 +108,17 @@ func (c *Client) NewRequest(method, urlPath string, reqBody, v interface{}) erro
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return hanldeError(RequestError, err, nil)
 	}
 
 	defer res.Body.Close()
 
+	if res.StatusCode >= 400 {
+		return hanldeError(ApiError, nil, res)
+	}
+
 	if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return err
+		return hanldeError(UnknownError, nil, nil)
 	}
 
 	return nil
