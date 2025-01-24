@@ -64,6 +64,36 @@ func main() {
 	}
 
 	fmt.Println(transfer)
+
+	
+
+	// Handling errors
+	// The flutterwave.Errors struct implements Error()
+	// Struct includes Name (error name) Err (actual error) 
+	// and Details (full error details, especially for API_ERROR)
+	// See example usage
+	
+	// Get error name
+	// returns API_ERROR or REQUEST_ERROR or UNKNOWN_ERROR
+	if err != nil {
+		fmt.Println(err.(flutterwave.Errors).Name)
+	}
+
+	// Get error message
+	// returns the actual error messaage, error.Error() or error message for Api errors
+	if err != nil {
+		fmt.Println(err.(flutterwave.Errors).Err)
+	}
+
+	// Get error details
+	// returns error details for API errors, else returns empty data
+	if err != nil {
+		fmt.Println(err.(flutterwave.Errors).Status) // Api response status
+	}
+
+	if err != nil {
+		fmt.Println(err.(flutterwave.Errors).Message) // Api response message
+	}
 }
 ```
 See the test files for details and more example usage.

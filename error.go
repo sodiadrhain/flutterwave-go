@@ -27,7 +27,7 @@ type ErrorDetails struct {
 	Message    string   `json:"message"`
 }
 
-func hanldeError(errType string, err error, resp *http.Response) *Errors {
+func hanldeError(errType string, err error, resp *http.Response) Errors {
 	var (
 		errorResp ErrorResponse
 		details   ErrorDetails
@@ -52,14 +52,14 @@ func hanldeError(errType string, err error, resp *http.Response) *Errors {
 		errorMsg = errorResp.Message
 	}
 
-	return &Errors{
+	return Errors{
 		Name:    errType,
 		Err:     errorMsg,
 		Details: details,
 	}
 }
 
-func (err *Errors) Error() string {
+func (err Errors) Error() string {
 	res, _ := json.Marshal(err)
 	return string(res)
 }

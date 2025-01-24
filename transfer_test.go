@@ -51,7 +51,7 @@ func TestRetryFailedTransfer(t *testing.T) {
 	_, err = testClient.Transfer.RetryFailedTransfer(transferId)
 
 	if err != nil {
-		errorMsg := err.(*Errors).Err
+		errorMsg := err.(Errors).Err
 		if !strings.Contains(errorMsg, "Cannot retry") {
 			t.Error(err)
 		}
