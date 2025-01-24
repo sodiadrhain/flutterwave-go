@@ -64,10 +64,11 @@ func main() {
 	}
 
 	fmt.Println(transfer)
+}
+```
 
-	
-
-	// Handling errors
+# Handling errors
+```go
 	// The flutterwave.Errors struct implements Error()
 	// Struct includes Name (error name) Err (actual error) 
 	// and Details (full error details, especially for API_ERROR)
@@ -94,8 +95,8 @@ func main() {
 	if err != nil {
 		fmt.Println(err.(flutterwave.Errors).Message) // Api response message
 	}
-}
 ```
+
 See the test files for details and more example usage.
 
 
