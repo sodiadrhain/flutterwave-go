@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -25,6 +26,7 @@ type Client struct {
 	Transfer    *TransferService
 	Transaction *TransactionService
 	Bank        *BankService
+	Beneficiary *BeneficiaryService
 }
 
 // New initializes a new client config for communication with Flutterwave API
@@ -45,6 +47,7 @@ func New(secretKey string, httpClient *http.Client) *Client {
 	client.Transfer = (*TransferService)(&client.service)
 	client.Transaction = (*TransactionService)(&client.service)
 	client.Bank = (*BankService)(&client.service)
+	client.Beneficiary = (*BeneficiaryService)(&client.service)
 	return client
 }
 
@@ -106,6 +109,8 @@ func (c *Client) makeRequest(method, urlPath string, reqBody, v interface{}) err
 
 	req.Header.Set("Authorization", "Bearer "+c.secretKey)
 
+	req.Header.Set("accept", "application/json")
+
 	res, err := c.httpClient.Do(req)
 	if err != nil {
 		return hanldeError(RequestError, err, nil)
@@ -113,12 +118,16 @@ func (c *Client) makeRequest(method, urlPath string, reqBody, v interface{}) err
 
 	defer res.Body.Close()
 
+	if !strings.Contains(res.Header.Get("Content-Type"), "application/json") {
+		return hanldeError(ApiError, fmt.Errorf("expected api response type of application/json, got %s", res.Header.Get("Content-Type")), nil)
+	}
+
 	if res.StatusCode >= 400 {
 		return hanldeError(ApiError, nil, res)
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return hanldeError(UnknownError, nil, nil)
+		return hanldeError(UnknownError, err, nil)
 	}
 
 	return nil

@@ -44,6 +44,12 @@ type TransactionListResponse struct {
 	Meta    MetaData      `json:"meta,omitempty"`
 }
 
+type RefundedTransactionResponse struct {
+	ID             string      `json:"id"`
+	AmountRefunded string      `json:"amount_refunded"`
+	Data           Transaction `json:"data"`
+}
+
 // Verify transaction status:
 // https://developer.flutterwave.com/reference/verify-transaction
 //
@@ -113,8 +119,8 @@ func (s *TransactionService) RefundTransaction(id int, body map[string]interface
 // https://developer.flutterwave.com/reference/get-transaction-refunds
 //
 // id is the refund id to fetch
-func (s *TransactionService) FetchRefundedTransaction(id int) (ApiResponse, error) {
-	var res ApiResponse
+func (s *TransactionService) FetchRefundedTransaction(id int) (RefundedTransactionResponse, error) {
+	var res RefundedTransactionResponse
 	url := fmt.Sprintf("/transactions/refunds/%d", id)
 	err := s.client.makeRequest(http.MethodGet, url, nil, &res)
 	return res, err
